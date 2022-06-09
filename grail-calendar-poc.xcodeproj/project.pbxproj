@@ -11,6 +11,12 @@
 		8FB555FA285080B8005040B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB555F9285080B8005040B1 /* ContentView.swift */; };
 		8FB555FC285080BA005040B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FB555FB285080BA005040B1 /* Assets.xcassets */; };
 		8FB555FF285080BA005040B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FB555FE285080BA005040B1 /* Preview Assets.xcassets */; };
+		8FB55606285087DC005040B1 /* ShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB55605285087DC005040B1 /* ShapeView.swift */; };
+		8FB5560828509B96005040B1 /* Modifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560728509B96005040B1 /* Modifier.swift */; };
+		8FB5560A28517520005040B1 /* DP1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560928517520005040B1 /* DP1.swift */; };
+		8FB5560C28517537005040B1 /* DP2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560B28517537005040B1 /* DP2.swift */; };
+		8FB5560E28518264005040B1 /* CustomCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560D28518264005040B1 /* CustomCalendar.swift */; };
+		8FB55610285183B2005040B1 /* CustomCalendarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +25,12 @@
 		8FB555F9285080B8005040B1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8FB555FB285080BA005040B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8FB555FE285080BA005040B1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8FB55605285087DC005040B1 /* ShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeView.swift; sourceTree = "<group>"; };
+		8FB5560728509B96005040B1 /* Modifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modifier.swift; sourceTree = "<group>"; };
+		8FB5560928517520005040B1 /* DP1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DP1.swift; sourceTree = "<group>"; };
+		8FB5560B28517537005040B1 /* DP2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DP2.swift; sourceTree = "<group>"; };
+		8FB5560D28518264005040B1 /* CustomCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendar.swift; sourceTree = "<group>"; };
+		8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendarModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +65,12 @@
 			children = (
 				8FB555F7285080B8005040B1 /* grail_calendar_pocApp.swift */,
 				8FB555F9285080B8005040B1 /* ContentView.swift */,
+				8FB5560D28518264005040B1 /* CustomCalendar.swift */,
+				8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */,
+				8FB5560928517520005040B1 /* DP1.swift */,
+				8FB5560B28517537005040B1 /* DP2.swift */,
+				8FB5560728509B96005040B1 /* Modifier.swift */,
+				8FB55605285087DC005040B1 /* ShapeView.swift */,
 				8FB555FB285080BA005040B1 /* Assets.xcassets */,
 				8FB555FD285080BA005040B1 /* Preview Content */,
 			);
@@ -137,8 +155,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FB5560C28517537005040B1 /* DP2.swift in Sources */,
+				8FB5560828509B96005040B1 /* Modifier.swift in Sources */,
+				8FB55610285183B2005040B1 /* CustomCalendarModel.swift in Sources */,
+				8FB55606285087DC005040B1 /* ShapeView.swift in Sources */,
 				8FB555FA285080B8005040B1 /* ContentView.swift in Sources */,
+				8FB5560E28518264005040B1 /* CustomCalendar.swift in Sources */,
 				8FB555F8285080B8005040B1 /* grail_calendar_pocApp.swift in Sources */,
+				8FB5560A28517520005040B1 /* DP1.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

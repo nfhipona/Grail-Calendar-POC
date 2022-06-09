@@ -8,14 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
+  @State private var date = Date()
+  @State var location: CGPoint = .zero
+
+  var body: some View {
+    GeometryReader { geometry in
+        VStack(spacing: 20) {
+          VStack {
+            Text("Apple")
+              .font(.headline)
+            DP1(date: $date)
+          }
+
+          VStack {
+            Text("Custom")
+              .font(.headline)
+            CustomCalendar(model: .init(), geometry: geometry)
+          }
+        }
+
     }
+  }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+  static var previews: some View {
+    ContentView()
+  }
 }
