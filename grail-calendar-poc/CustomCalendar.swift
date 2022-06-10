@@ -12,6 +12,8 @@ struct CustomCalendar: View {
   private var geometry: GeometryProxy
   private let padding: CGFloat
 
+  @State private var showMonthYearPicker: Bool = false
+
   init(model: CustomCalendarModel, geometry: GeometryProxy, padding: CGFloat = 14) {
     _model = .init(wrappedValue: model)
     self.geometry = geometry
@@ -28,9 +30,22 @@ struct CustomCalendar: View {
       }
       .frame(width: contentWidth, height: 50, alignment: .center)
 
-      drawDaysOfTheMonthTitleViewStack(contentWidth: contentWidth)
-
-      drawDaysOfTheMonthViewStack(contentWidth: contentWidth)
+      VStack {
+        drawDaysOfTheMonthTitleViewStack(contentWidth: contentWidth)
+        drawDaysOfTheMonthViewStack(contentWidth: contentWidth)
+      }
+      .overlay {
+        if showMonthYearPicker {
+          GeometryReader { geometry in
+            VStack {
+              buildMonthPickerViewStack(geometry: geometry)
+                .transition(.move(edge: .top))
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+            .background(.white)
+          }
+        }
+      }
     }
     .padding(.horizontal, 20)
     .frame(width: geometry.size.width, alignment: .center)
@@ -38,7 +53,9 @@ struct CustomCalendar: View {
 
   private func monthButton() -> some View {
     Button {
-
+      withAnimation {
+        showMonthYearPicker = !showMonthYearPicker
+      }
     } label: {
       HStack {
         let font = Font.system(size: 18, weight: .bold, design: .rounded)
@@ -125,7 +142,7 @@ struct CustomCalendar: View {
           }
         } else {
           VStack { }
-          .frame(width: dayWidth, height: dayWidth, alignment: .center)
+            .frame(width: dayWidth, height: dayWidth, alignment: .center)
         }
       }
     }
@@ -139,6 +156,19 @@ struct CustomCalendar: View {
         }
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
       }
+    }
+  }
+
+  private func buildMonthPickerViewStack(geometry: GeometryProxy) -> some View {
+    MonthYearPickerView(model: .init(),
+                        month: $model.month,
+                        year: $model.year,
+                        geometry: geometry)
+    .onChange(of: model.month) { newValue in
+      print("Month: ", newValue!)
+    }
+    .onChange(of: model.year) { newValue in
+      print("Year: ", newValue!)
     }
   }
 }

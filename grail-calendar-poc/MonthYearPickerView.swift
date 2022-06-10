@@ -31,23 +31,25 @@ struct MonthYearPickerView: View {
   var body: some View {
     HStack(spacing: 0) {
       let contentWidth = geometry.size.width / 2
+
       Picker("Month", selection: $monthSelection) {
         ForEach(model.monthsData, id: \.idx) { data in
           Text(data.title)
             .accessibilityLabel(data.title)
         }
       }
-      .pickerStyle(.wheel)
       .frame(width: contentWidth, alignment: .center)
+      .pickerStyle(.wheel)
 
+      Spacer(minLength: 0)
       Picker("Year", selection: $yearSelection) {
         ForEach(model.yearsData, id: \.idx) { data in
           Text(data.title)
             .accessibilityLabel(data.title)
         }
       }
-      .pickerStyle(.wheel)
       .frame(width: contentWidth, alignment: .center)
+      .pickerStyle(.wheel)
       .onChange(of: monthSelection) { newValue in
         let filteredData = model.monthsData.filter { $0.idx == newValue }
         if let selectedData = filteredData.first {

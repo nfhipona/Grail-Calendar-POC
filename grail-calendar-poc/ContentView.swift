@@ -15,7 +15,8 @@ struct ContentView: View {
 
   var body: some View {
     GeometryReader { geometry in
-      picker(geometry: geometry)
+      //pocCalendar(geometry: geometry)
+      CustomCalendar(model: .init(), geometry: geometry)
     }
   }
 
