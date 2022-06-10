@@ -9,9 +9,12 @@ import SwiftUI
 
 struct MonthYearPickerView: View {
   @StateObject private var model: MonthYearPickerViewModel
-  @State private var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0, title: "", value: "April")
-  @State private var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0, title: "", value: 2022)
+  @Binding private var month: MonthYearPickerViewModel.PickerData<String>
+  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>
   private let geometry: GeometryProxy
+
+  @State private var monthSelection: Int = 0
+  @State private var yearSelection: Int = 0
 
   init(model: MonthYearPickerViewModel,
        month: Binding<MonthYearPickerViewModel.PickerData<String>>,
@@ -19,8 +22,8 @@ struct MonthYearPickerView: View {
        geometry: GeometryProxy) {
 
     _model = .init(wrappedValue: model)
-//    _month = month
-//    _year = year
+    _month = month
+    _year = year
     
     self.geometry = geometry
   }
@@ -28,33 +31,37 @@ struct MonthYearPickerView: View {
   var body: some View {
     HStack(spacing: 0) {
       let contentWidth = geometry.size.width / 2
-      Picker("Month", selection: $month) {
-        ForEach(model.monthsData, id: \.id) { data in
+      Picker("Month", selection: $monthSelection) {
+        ForEach(model.monthsData, id: \.idx) { data in
           Text(data.title)
             .accessibilityLabel(data.title)
-            .tag(data.id)
         }
       }
       .pickerStyle(.wheel)
       .frame(width: contentWidth, alignment: .center)
 
-      Picker("Year", selection: $year) {
-        ForEach(model.yearsData, id: \.id) { data in
+      Picker("Year", selection: $yearSelection) {
+        ForEach(model.yearsData, id: \.idx) { data in
           Text(data.title)
             .accessibilityLabel(data.title)
-            .tag(data.id)
         }
       }
       .pickerStyle(.wheel)
       .frame(width: contentWidth, alignment: .center)
+      .onChange(of: monthSelection) { newValue in
+        let filteredData = model.monthsData.filter { $0.idx == newValue }
+        if let selectedData = filteredData.first {
+          month = selectedData
+        }
+      }
+      .onChange(of: yearSelection) { newValue in
+        let filteredData = model.yearsData.filter { $0.idx == newValue }
+        if let selectedData = filteredData.first {
+          year = selectedData
+        }
+      }
     }
     .frame(width: geometry.size.width, alignment: .center)
-    .onChange(of: month) { newValue in
-      print("Month: ", newValue)
-    }
-    .onChange(of: year) { newValue in
-      print("Year: ", newValue)
-    }
   }
 }
 
