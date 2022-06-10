@@ -9,16 +9,16 @@ import SwiftUI
 
 struct MonthYearPickerView: View {
   @StateObject private var model: MonthYearPickerViewModel
-  @Binding private var month: MonthYearPickerViewModel.PickerData<String>
-  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>
+  @Binding private var month: MonthYearPickerViewModel.PickerData<String>?
+  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>?
   private let geometry: GeometryProxy
 
   @State private var monthSelection: Int = 0
   @State private var yearSelection: Int = 0
 
   init(model: MonthYearPickerViewModel,
-       month: Binding<MonthYearPickerViewModel.PickerData<String>>,
-       year: Binding<MonthYearPickerViewModel.PickerData<Int>>,
+       month: Binding<MonthYearPickerViewModel.PickerData<String>?>,
+       year: Binding<MonthYearPickerViewModel.PickerData<Int>?>,
        geometry: GeometryProxy) {
 
     _model = .init(wrappedValue: model)
@@ -66,8 +66,8 @@ struct MonthYearPickerView: View {
 }
 
 struct MonthYearPicker_Previews: PreviewProvider {
-  @State static var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0, title: "", value: "April")
-  @State static var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0, title: "", value: 2022)
+  @State static var month: MonthYearPickerViewModel.PickerData<String>? = nil
+  @State static var year: MonthYearPickerViewModel.PickerData<Int>? = nil
 
   static var previews: some View {
     GeometryReader { geometry in
@@ -75,12 +75,6 @@ struct MonthYearPicker_Previews: PreviewProvider {
                           month: $month,
                           year: $year,
                           geometry: geometry)
-      .onChange(of: month) { newValue in
-        print("Month: ", newValue)
-      }
-      .onChange(of: year) { newValue in
-        print("Year: ", newValue)
-      }
     }
   }
 }

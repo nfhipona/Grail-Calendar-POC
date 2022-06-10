@@ -111,6 +111,8 @@ class CustomCalendarModel: ObservableObject {
   @Published var activeMonth: Date
 
   @Published var dates: [DayRowModel] = []
+  @Published var month: MonthYearPickerViewModel.PickerData<String>? = nil
+  @Published var year: MonthYearPickerViewModel.PickerData<Int>? = nil
 
   init(initialDate: Date = .now) {
     self.date = initialDate
