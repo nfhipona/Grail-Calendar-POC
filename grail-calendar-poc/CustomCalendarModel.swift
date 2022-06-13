@@ -65,7 +65,7 @@ extension CustomCalendarModel {
 
     var isCurrentDate: Bool {
       if let date = date {
-        let isCurrent = date == Date()
+        let isCurrent = CustomCalendarModel.calendar.isDateInToday(date)
         return isCurrent
       }
 
@@ -94,13 +94,16 @@ extension CustomCalendarModel {
   }
 }
 
-class CustomCalendarModel: ObservableObject {
-  private let calendar: Calendar = {
+extension CustomCalendarModel {
+  static let calendar: Calendar = {
     var calendar = Calendar(identifier: .gregorian)
     calendar.locale = .current
     calendar.timeZone = .current
     return calendar
   }()
+}
+
+class CustomCalendarModel: ObservableObject {
   private let formatter: DateFormatter = {
     let dateFormatter = DateFormatter()
     dateFormatter.setLocalizedDateFormatFromTemplate("EEEEMMMMdyyyy")
@@ -118,12 +121,12 @@ class CustomCalendarModel: ObservableObject {
     self.date = initialDate
     self.activeMonth = initialDate
 
-    let month = calendar.component(.month, from: initialDate)
+    let month = CustomCalendarModel.calendar.component(.month, from: initialDate)
     let monthIdx = month - 1
     let monthName = Calendar.current.monthSymbols[monthIdx]
-    let year = calendar.component(.year, from: initialDate)
+    let year = CustomCalendarModel.calendar.component(.year, from: initialDate)
 
-    self.dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
+    self.dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
     self.month = .init(idx: monthIdx, title: monthName, value: monthName)
     self.year = .init(idx: year, title: year.description, value: year)
   }
@@ -251,11 +254,11 @@ extension CustomCalendarModel {
   func updateActiveMonth(monthIndex: Int) {
     let month = monthIndex + 1
     let year = year.value
-    dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
+    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
   }
 
   func updateActiveYear(year: Int) {
     let month = month.idx + 1
-    dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
+    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
   }
 }

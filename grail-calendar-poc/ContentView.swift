@@ -12,15 +12,14 @@ struct ContentView: View {
   @State var location: CGPoint = .zero
 
   @State var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0,
-                                                                               title: "",
-                                                                               value: "")
+                                                                        title: "",
+                                                                        value: "")
   @State var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
-                                                                           title: "",
-                                                                           value: 0)
+                                                                    title: "",
+                                                                    value: 0)
   var body: some View {
     GeometryReader { geometry in
-      //pocCalendar(geometry: geometry)
-      CustomCalendar(model: .init(), geometry: geometry)
+      pocCalendar(geometry: geometry)
     }
   }
 

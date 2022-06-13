@@ -68,13 +68,32 @@ struct CustomCalendar: View {
   }
 
   private func monthNavigationButton() -> some View {
-    HStack {
+    HStack(spacing: 10) {
+      let iconSize = CGSize(width: 40, height: 40)
       let font = Font.system(size: 18, weight: .bold, design: .rounded)
-      Image(systemName: "chevron.left")
-        .font(font)
+      Button {
+        let newIndex = model.month.idx - 1
+        let monthIndex = newIndex < 0 ? 11 : newIndex
+        let monthName = Calendar.current.monthSymbols[monthIndex]
+        model.month = .init(idx: monthIndex, title: monthName, value: monthName)
+        model.updateActiveMonth(monthIndex: monthIndex)
+      } label: {
+        Image(systemName: "chevron.left")
+          .font(font)
+          .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
+      }
 
-      Image(systemName: "chevron.right")
-        .font(font)
+      Button {
+        let newIndex = model.month.idx + 1
+        let monthIndex = newIndex > 11 ? 0 : newIndex
+        let monthName = Calendar.current.monthSymbols[monthIndex]
+        model.month = .init(idx: monthIndex, title: monthName, value: monthName)
+        model.updateActiveMonth(monthIndex: monthIndex)
+      } label: {
+        Image(systemName: "chevron.right")
+          .font(font)
+          .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
+      }
     }
     .frame(height: 40, alignment: .leading)
     .foregroundColor(.blue)
@@ -95,8 +114,8 @@ struct CustomCalendar: View {
   @ViewBuilder
   private func drawDaysOfTheMonthViewStack(contentWidth: CGFloat) -> some View {
     let dayWidth = contentWidth / CGFloat(Calendar.current.shortWeekdaySymbols.count)
-    let daysContainerHeight = dayWidth * 6 + 40
-    VStack(spacing: 10) {
+    let daysContainerHeight = dayWidth * 6
+    VStack(spacing: 0) {
       let range = 0..<model.dates.count
       ForEach(range, id: \.self) { i in
         let collection = model.dates[i]
