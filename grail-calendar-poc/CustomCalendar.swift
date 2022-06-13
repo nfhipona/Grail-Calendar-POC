@@ -165,10 +165,12 @@ struct CustomCalendar: View {
                         year: $model.year,
                         geometry: geometry)
     .onChange(of: model.month) { newValue in
-      print("Month: ", newValue!)
+      print("Month: ", newValue)
+      model.updateActiveMonth(monthIndex: newValue.idx)
     }
     .onChange(of: model.year) { newValue in
-      print("Year: ", newValue!)
+      print("Year: ", newValue)
+      model.updateActiveYear(year: newValue.value)
     }
   }
 }

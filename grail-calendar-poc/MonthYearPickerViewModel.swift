@@ -10,7 +10,7 @@ import Foundation
 extension MonthYearPickerViewModel {
   struct PickerData<T: Hashable>: Identifiable, Hashable {
     let id: UUID
-    let idx: Int
+    var idx: Int
     let title: String
     let value: T
 

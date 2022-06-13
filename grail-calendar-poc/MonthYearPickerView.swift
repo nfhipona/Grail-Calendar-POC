@@ -9,22 +9,24 @@ import SwiftUI
 
 struct MonthYearPickerView: View {
   @StateObject private var model: MonthYearPickerViewModel
-  @Binding private var month: MonthYearPickerViewModel.PickerData<String>?
-  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>?
+  @Binding private var month: MonthYearPickerViewModel.PickerData<String>
+  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>
   private let geometry: GeometryProxy
 
-  @State private var monthSelection: Int = 0
-  @State private var yearSelection: Int = 0
+  @State private var monthSelection: Int
+  @State private var yearSelection: Int
 
   init(model: MonthYearPickerViewModel,
-       month: Binding<MonthYearPickerViewModel.PickerData<String>?>,
-       year: Binding<MonthYearPickerViewModel.PickerData<Int>?>,
+       month: Binding<MonthYearPickerViewModel.PickerData<String>>,
+       year: Binding<MonthYearPickerViewModel.PickerData<Int>>,
        geometry: GeometryProxy) {
 
     _model = .init(wrappedValue: model)
     _month = month
     _year = year
-    
+    _monthSelection = .init(initialValue: month.wrappedValue.idx)
+    _yearSelection = .init(initialValue: year.wrappedValue.idx)
+
     self.geometry = geometry
   }
 
@@ -68,8 +70,12 @@ struct MonthYearPickerView: View {
 }
 
 struct MonthYearPicker_Previews: PreviewProvider {
-  @State static var month: MonthYearPickerViewModel.PickerData<String>? = nil
-  @State static var year: MonthYearPickerViewModel.PickerData<Int>? = nil
+  @State static var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0,
+                                                                               title: "",
+                                                                               value: "")
+  @State static var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
+                                                                           title: "",
+                                                                           value: 0)
 
   static var previews: some View {
     GeometryReader { geometry in

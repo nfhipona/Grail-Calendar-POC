@@ -10,9 +10,13 @@ import SwiftUI
 struct ContentView: View {
   @State private var date = Date()
   @State var location: CGPoint = .zero
-  @State var month: MonthYearPickerViewModel.PickerData<String>? = nil
-  @State var year: MonthYearPickerViewModel.PickerData<Int>? = nil
 
+  @State var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0,
+                                                                               title: "",
+                                                                               value: "")
+  @State var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
+                                                                           title: "",
+                                                                           value: 0)
   var body: some View {
     GeometryReader { geometry in
       //pocCalendar(geometry: geometry)
@@ -26,10 +30,10 @@ struct ContentView: View {
                         year: $year,
                         geometry: geometry)
     .onChange(of: month) { newValue in
-      print("Month: ", newValue!)
+      print("Month: ", newValue)
     }
     .onChange(of: year) { newValue in
-      print("Year: ", newValue!)
+      print("Year: ", newValue)
     }
   }
 

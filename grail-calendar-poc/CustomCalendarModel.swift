@@ -111,13 +111,21 @@ class CustomCalendarModel: ObservableObject {
   @Published var activeMonth: Date
 
   @Published var dates: [DayRowModel] = []
-  @Published var month: MonthYearPickerViewModel.PickerData<String>? = nil
-  @Published var year: MonthYearPickerViewModel.PickerData<Int>? = nil
+  @Published var month: MonthYearPickerViewModel.PickerData<String>
+  @Published var year: MonthYearPickerViewModel.PickerData<Int>
 
   init(initialDate: Date = .now) {
     self.date = initialDate
     self.activeMonth = initialDate
-    self.dates = collectDaysPerRow(forMonth: month(), inYear: year())
+
+    let month = calendar.component(.month, from: initialDate)
+    let monthIdx = month - 1
+    let monthName = Calendar.current.monthSymbols[monthIdx]
+    let year = calendar.component(.year, from: initialDate)
+
+    self.dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
+    self.month = .init(idx: monthIdx, title: monthName, value: monthName)
+    self.year = .init(idx: year, title: year.description, value: year)
   }
 }
 
@@ -129,7 +137,7 @@ extension CustomCalendarModel {
 }
 
 extension CustomCalendarModel {
-  func dateRange(forMonth month: Int, inYear year: Int) -> ClosedRange<Int> {
+  class func dateRange(_ calendar: Calendar = .current, forMonth month: Int, inYear year: Int) -> ClosedRange<Int> {
     var start = DateComponents()
     start.day = 1
     start.month = month
@@ -143,17 +151,7 @@ extension CustomCalendarModel {
     return 1...calendar.dateComponents([.day], from: start, to: end).day!
   }
 
-  func month(withDate d: Date? = nil) -> Int {
-    let from = d ?? date
-    return calendar.component(.month, from: from)
-  }
-
-  func year(withDate d: Date? = nil) -> Int {
-    let from = d ?? date
-    return calendar.component(.year, from: from)
-  }
-
-  func startOfDayInCurrentWeek(day: Int = 1, inMonth month: Int, inYear: Int) -> Weekday {
+  func startOfDayInCurrentWeek(_ calendar: Calendar = .current, day: Int = 1, inMonth month: Int, inYear: Int) -> Weekday {
     var weekdaySubject = DateComponents()
     weekdaySubject.day = day
     weekdaySubject.month = month
@@ -164,14 +162,14 @@ extension CustomCalendarModel {
     return Weekday(rawValue: weekday)!
   }
 
-  func generateDays(forMonth month: Int, inYear: Int) -> [DayModel] {
+  class func generateDays(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayModel] {
     var dComponents = DateComponents()
     dComponents.day = 1
     dComponents.month = month
     dComponents.year = inYear
 
     let startDate = calendar.date(from: dComponents)!
-    let range = dateRange(forMonth: month, inYear: inYear)
+    let range = dateRange(calendar, forMonth: month, inYear: inYear)
 
     let currentDay = calendar.component(.day, from: Date())
     let dayStartInWeek = Calendar.current.component(.weekday, from: startDate)
@@ -198,8 +196,8 @@ extension CustomCalendarModel {
     return days
   }
 
-  func collectDaysPerRow(forMonth month: Int, inYear: Int) -> [DayRowModel] {
-    let days = generateDays(forMonth: month, inYear: inYear)
+  class func collectDaysPerRow(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayRowModel] {
+    let days = generateDays(calendar, forMonth: month, inYear: inYear)
 
     var daysCollection: [DayRowModel] = []
     var collectionIndex: Int = 0
@@ -244,5 +242,16 @@ extension CustomCalendarModel {
       datesTmp.append(.init(rows: rows, state: .default))
     }
     dates = datesTmp
+  }
+
+  func updateActiveMonth(monthIndex: Int) {
+    let month = monthIndex + 1
+    let year = year.value
+    dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
+  }
+
+  func updateActiveYear(year: Int) {
+    let month = month.idx + 1
+    dates = CustomCalendarModel.collectDaysPerRow(calendar, forMonth: month, inYear: year)
   }
 }
