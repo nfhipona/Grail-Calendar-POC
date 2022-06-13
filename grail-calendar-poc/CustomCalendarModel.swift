@@ -114,6 +114,8 @@ class CustomCalendarModel: ObservableObject {
   @Published var activeMonth: Date
 
   @Published var dates: [DayRowModel] = []
+  @Published var datesTempLeft: [DayRowModel] = []
+  @Published var datesTempRight: [DayRowModel] = []
   @Published var month: MonthYearPickerViewModel.PickerData<String>
   @Published var year: MonthYearPickerViewModel.PickerData<Int>
 
@@ -129,6 +131,14 @@ class CustomCalendarModel: ObservableObject {
     self.dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
     self.month = .init(idx: monthIdx, title: monthName, value: monthName)
     self.year = .init(idx: year, title: year.description, value: year)
+
+    let newIndexLeft = month - 1
+    let monthIndexLeft = newIndexLeft < 0 ? 11 : newIndexLeft
+    self.datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexLeft, inYear: year)
+
+    let newIndexRight = month + 1
+    let monthIndexRight = newIndexRight > 11 ? 0 : newIndexRight
+    self.datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexRight, inYear: year)
   }
 }
 

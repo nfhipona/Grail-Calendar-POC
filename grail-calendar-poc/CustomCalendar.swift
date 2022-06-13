@@ -13,6 +13,7 @@ struct CustomCalendar: View {
   private let padding: CGFloat
 
   @State private var showMonthYearPicker: Bool = false
+  @State private var activeDatesPage: Int = 1
 
   init(model: CustomCalendarModel, geometry: GeometryProxy, padding: CGFloat = 14) {
     _model = .init(wrappedValue: model)
@@ -77,6 +78,7 @@ struct CustomCalendar: View {
         let monthName = Calendar.current.monthSymbols[monthIndex]
         model.month = .init(idx: monthIndex, title: monthName, value: monthName)
         model.updateActiveMonth(monthIndex: monthIndex)
+        //activeDatesPage = 0
       } label: {
         Image(systemName: "chevron.left")
           .font(font)
@@ -89,6 +91,7 @@ struct CustomCalendar: View {
         let monthName = Calendar.current.monthSymbols[monthIndex]
         model.month = .init(idx: monthIndex, title: monthName, value: monthName)
         model.updateActiveMonth(monthIndex: monthIndex)
+        //        activeDatesPage = 2
       } label: {
         Image(systemName: "chevron.right")
           .font(font)
@@ -115,14 +118,41 @@ struct CustomCalendar: View {
   private func drawDaysOfTheMonthViewStack(contentWidth: CGFloat) -> some View {
     let dayWidth = contentWidth / CGFloat(Calendar.current.shortWeekdaySymbols.count)
     let daysContainerHeight = dayWidth * 6
-    VStack(spacing: 0) {
-      let range = 0..<model.dates.count
+
+    drawDateCollectionViewStack(dateCollection: model.dates, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
+
+    /*ScrollViewReader { proxy in
+      ScrollView(.horizontal, showsIndicators: false) {
+        LazyHStack(spacing: 0) {
+          let dates = [model.datesTempLeft, model.dates, model.datesTempRight]
+          let colors = [Color.gray, Color.green, Color.blue] // color debugging
+          ForEach(0...2, id: \.self) { idx in
+            let dateCollection = dates[idx]
+            drawDateCollectionViewStack(dateCollection: dateCollection, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
+              .tag(idx)
+              .background(colors[idx])
+          }
+        }
+      }
+      .frame(width: geometry.size.width, height: daysContainerHeight, alignment: .center)
+      .onChange(of: activeDatesPage) { newValue in
+        withAnimation {
+          proxy.scrollTo(newValue, anchor: .center)
+        }
+      }
+    }
+     */
+  }
+
+  private func drawDateCollectionViewStack(dateCollection: [CustomCalendarModel.DayRowModel], contentWidth: CGFloat, daysContainerHeight: CGFloat) -> some View {
+    LazyVStack(spacing: 0) {
+      let range = 0..<dateCollection.count
       ForEach(range, id: \.self) { i in
-        let collection = model.dates[i]
+        let collection = dateCollection[i]
         drawDaysOfTheMonthRowViewStack(contentWidth: contentWidth, rowModel: collection)
       }
     }
-    .frame(width: contentWidth, height: daysContainerHeight, alignment: .top)
+    .frame(width: geometry.size.width, height: daysContainerHeight, alignment: .top)
   }
 
   @ViewBuilder
