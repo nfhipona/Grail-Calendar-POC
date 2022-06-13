@@ -98,7 +98,7 @@ class CustomCalendarModel: ObservableObject {
   private let calendar: Calendar = {
     var calendar = Calendar(identifier: .gregorian)
     calendar.locale = .current
-    calendar.timeZone = TimeZone.current
+    calendar.timeZone = .current
     return calendar
   }()
   private let formatter: DateFormatter = {
@@ -138,12 +138,12 @@ extension CustomCalendarModel {
 
 extension CustomCalendarModel {
   class func dateRange(_ calendar: Calendar = .current, forMonth month: Int, inYear year: Int) -> ClosedRange<Int> {
-    var start = DateComponents()
+    var start = DateComponents(calendar: calendar, timeZone: .current)
     start.day = 1
     start.month = month
     start.year = year
 
-    var end = DateComponents()
+    var end = DateComponents(calendar: calendar, timeZone: .current)
     end.day = 1
     end.month = month + 1
     end.year = year
@@ -152,7 +152,7 @@ extension CustomCalendarModel {
   }
 
   func startOfDayInCurrentWeek(_ calendar: Calendar = .current, day: Int = 1, inMonth month: Int, inYear: Int) -> Weekday {
-    var weekdaySubject = DateComponents()
+    var weekdaySubject = DateComponents(calendar: calendar, timeZone: .current)
     weekdaySubject.day = day
     weekdaySubject.month = month
     weekdaySubject.year = inYear
@@ -163,15 +163,13 @@ extension CustomCalendarModel {
   }
 
   class func generateDays(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayModel] {
-    var dComponents = DateComponents()
+    var dComponents = DateComponents(calendar: calendar, timeZone: .current)
     dComponents.day = 1
     dComponents.month = month
     dComponents.year = inYear
 
     let startDate = calendar.date(from: dComponents)!
     let range = dateRange(calendar, forMonth: month, inYear: inYear)
-
-    let currentDay = calendar.component(.day, from: Date())
     let dayStartInWeek = Calendar.current.component(.weekday, from: startDate)
 
     var days: [DayModel] = []
@@ -180,7 +178,8 @@ extension CustomCalendarModel {
       days.append(DayModel(number: -1))
     }
 
-    var dayComponents = DateComponents()
+    var dayComponents = DateComponents(calendar: calendar, timeZone: .current)
+    dayComponents.calendar = calendar
     dayComponents.month = month
     dayComponents.year = inYear
 
@@ -188,12 +187,17 @@ extension CustomCalendarModel {
       dayComponents.day = i
 
       if let date = calendar.date(from: dayComponents) {
-        let model = DayModel(date: date, number: i, isSelected: i == currentDay)
+        let isSelected = calendar.isDateInToday(date)
+        let model = DayModel(date: date, number: i, isSelected: isSelected)
         days.append(model)
       }
     }
 
     return days
+  }
+
+  class func isSameDay() {
+
   }
 
   class func collectDaysPerRow(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayRowModel] {
