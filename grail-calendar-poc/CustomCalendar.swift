@@ -37,12 +37,8 @@ struct CustomCalendar: View {
       .overlay {
         if showMonthYearPicker {
           GeometryReader { geometry in
-            VStack {
-              buildMonthPickerViewStack(geometry: geometry)
-                .transition(.move(edge: .top))
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
-            .background(.white)
+            buildMonthPickerViewStack(geometry: geometry)
+              .transition(.move(edge: .top))
           }
         }
       }
@@ -98,17 +94,16 @@ struct CustomCalendar: View {
 
   @ViewBuilder
   private func drawDaysOfTheMonthViewStack(contentWidth: CGFloat) -> some View {
-    VStack {
+    let dayWidth = contentWidth / CGFloat(Calendar.current.shortWeekdaySymbols.count)
+    let daysContainerHeight = dayWidth * 6 + 40
+    VStack(spacing: 10) {
       let range = 0..<model.dates.count
       ForEach(range, id: \.self) { i in
         let collection = model.dates[i]
-        VStack {
-          drawDaysOfTheMonthRowViewStack(contentWidth: contentWidth, rowModel: collection)
-        }
-        .frame(width: contentWidth, alignment: .center)
+        drawDaysOfTheMonthRowViewStack(contentWidth: contentWidth, rowModel: collection)
       }
     }
-    .frame(width: contentWidth, alignment: .center)
+    .frame(width: contentWidth, height: daysContainerHeight, alignment: .top)
   }
 
   @ViewBuilder
@@ -164,6 +159,8 @@ struct CustomCalendar: View {
                         month: $model.month,
                         year: $model.year,
                         geometry: geometry)
+    .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+    .background(.white)
     .onChange(of: model.month) { newValue in
       print("Month: ", newValue)
       model.updateActiveMonth(monthIndex: newValue.idx)

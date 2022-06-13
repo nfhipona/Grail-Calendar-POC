@@ -131,8 +131,8 @@ class CustomCalendarModel: ObservableObject {
 
 extension CustomCalendarModel {
   var currentMonthYear: String {
-    formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMMyyyy", options: 0, locale: .current)
-    return formatter.string(from: date)
+    // MMMMyyyy
+    return "\(month.value) \(year.value)"
   }
 }
 
