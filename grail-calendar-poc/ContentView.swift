@@ -11,12 +11,7 @@ struct ContentView: View {
   @State private var date = Date()
   @State var location: CGPoint = .zero
 
-  @State var month: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
-                                                                        title: "",
-                                                                        value: 0)
-  @State var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
-                                                                    title: "",
-                                                                    value: 0)
+  @State var monthYear: MonthYearPickerViewModel.MonthYearData = .init(month: 04, year: 2022)
   var body: some View {
     GeometryReader { geometry in
       pocCalendar(geometry: geometry)
@@ -25,14 +20,10 @@ struct ContentView: View {
 
   private func picker(geometry: GeometryProxy) -> some View {
     MonthYearPickerView(model: .init(),
-                        month: $month,
-                        year: $year,
+                        monthYear: $monthYear,
                         geometry: geometry)
-    .onChange(of: month) { newValue in
+    .onChange(of: monthYear) { newValue in
       print("Month: ", newValue)
-    }
-    .onChange(of: year) { newValue in
-      print("Year: ", newValue)
     }
   }
 

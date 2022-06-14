@@ -116,21 +116,16 @@ class CustomCalendarModel: ObservableObject {
   @Published var dates: [DayRowModel] = []
   @Published var datesTempLeft: [DayRowModel] = []
   @Published var datesTempRight: [DayRowModel] = []
-  @Published var month: MonthYearPickerViewModel.PickerData<Int>
-  @Published var year: MonthYearPickerViewModel.PickerData<Int>
+  @Published var monthYear: MonthYearPickerViewModel.MonthYearData
 
   init(initialDate: Date = .now) {
     self.date = initialDate
     self.activeMonth = initialDate
 
     let month = CustomCalendarModel.calendar.component(.month, from: initialDate)
-    let monthIdx = month - 1
-    let monthName = Calendar.current.monthSymbols[monthIdx]
     let year = CustomCalendarModel.calendar.component(.year, from: initialDate)
-
-    self.dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
-    self.month = .init(idx: monthIdx, title: monthName, value: month)
-    self.year = .init(idx: year, title: year.description, value: year)
+    let monthIndex = month - 1
+    self.monthYear = .init(month: monthIndex, year: year)
 
     generateTempCollectionPage()
   }
@@ -139,7 +134,7 @@ class CustomCalendarModel: ObservableObject {
 extension CustomCalendarModel {
   var currentMonthYear: String {
     // MMMMyyyy
-    return "\(month.title) \(year.value)"
+    return monthYear.title
   }
 
   func startOfDayInCurrentWeek(_ calendar: Calendar = .current, day: Int = 1, inMonth month: Int, inYear: Int) -> Weekday {
@@ -170,29 +165,24 @@ extension CustomCalendarModel {
     dates = datesTmp
   }
 
-  func updateActiveMonth(monthIndex: Int) {
-    let month = monthIndex + 1
-    let year = year.value
-    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
-  }
-
-  func updateActiveYear(year: Int) {
-    let month = month.idx + 1
-    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: month, inYear: year)
-  }
-
   func generateTempCollectionPage() {
-    let newIndexLeft = month.value - 1
+    let monthNumberConstant = monthYear.month + 1
+
+    let newIndexLeft = monthNumberConstant - 1
     let isPreviousYear = newIndexLeft < 0
     let monthIndexLeft = isPreviousYear ? 11 : newIndexLeft
-    let yearTemplateLeft = isPreviousYear ? year.value - 1 : year.value
-    self.datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexLeft, inYear: yearTemplateLeft)
+    let yearTemplateLeft = isPreviousYear ? monthYear.year - 1 : monthYear.year
+    datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexLeft, inYear: yearTemplateLeft)
 
-    let newIndexRight = month.value + 1
+    // current timeline
+    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthNumberConstant, inYear: monthYear.year)
+
+    // future timeline
+    let newIndexRight = monthNumberConstant + 1
     let isNewYear = newIndexRight > 11
     let monthIndexRight = isNewYear ? 0 : newIndexRight
-    let yearTemplateRight = isNewYear ? year.value + 1 : year.value
-    self.datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexRight, inYear: yearTemplateRight)
+    let yearTemplateRight = isNewYear ? monthYear.year + 1 : monthYear.year
+    datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexRight, inYear: yearTemplateRight)
   }
 }
 

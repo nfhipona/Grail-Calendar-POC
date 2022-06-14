@@ -32,6 +32,33 @@ extension MonthYearPickerViewModel {
       hasher.combine(value)
     }
   }
+
+  struct MonthYearData: Identifiable, Hashable {
+    let id: UUID
+    let month: Int
+    let year: Int
+
+    var title: String { // MMMMyyyy
+      let monthName = Calendar.current.monthSymbols[month]
+      return "\(monthName) \(year)"
+    }
+
+    init(month: Int, year: Int) {
+      self.id = UUID()
+      self.month = month
+      self.year = year
+    }
+
+    static func == (lhs: MonthYearData, rhs: MonthYearData) -> Bool {
+      return lhs.id == rhs.id && lhs.month == rhs.month && lhs.year == rhs.year
+    }
+
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
+      hasher.combine(month)
+      hasher.combine(year)
+    }
+  }
 }
 
 class MonthYearPickerViewModel: ObservableObject {
@@ -54,7 +81,7 @@ extension MonthYearPickerViewModel {
   class  func generateMonths() -> [PickerData<Int>] {
     var data: [PickerData<Int>] = []
     for (idx, month) in Calendar.current.monthSymbols.enumerated() {
-      data.append(PickerData(idx: idx, title: month, value: idx + 1))
+      data.append(PickerData(idx: idx, title: month, value: idx))
     }
     return data
   }

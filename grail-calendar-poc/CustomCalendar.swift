@@ -74,15 +74,11 @@ struct CustomCalendar: View {
       let iconSize = CGSize(width: 40, height: 40)
       let font = Font.system(size: 18, weight: .bold, design: .rounded)
       Button {
-        let newIndex = model.month.idx - 1
+        let newIndex = model.monthYear.month - 1
         let isPreviousYear = newIndex < 0
         let monthIndex = isPreviousYear ? 11 : newIndex
-        let monthName = Calendar.current.monthSymbols[monthIndex]
-        model.month = .init(idx: monthIndex, title: monthName, value: monthIndex + 1)
-        if isPreviousYear {
-          let previousYear = model.year.value - 1
-          model.year = .init(idx: previousYear, title: previousYear.description, value: previousYear)
-        }
+        let updatedYear = isPreviousYear ? model.monthYear.year - 1 : model.monthYear.year
+        model.monthYear = .init(month: monthIndex, year: updatedYear)
         activeDatesPage = 0
       } label: {
         Image(systemName: "chevron.left")
@@ -91,15 +87,11 @@ struct CustomCalendar: View {
       }
 
       Button {
-        let newIndex = model.month.idx + 1
+        let newIndex = model.monthYear.month + 1
         let isNewYear = newIndex > 11
         let monthIndex = isNewYear ? 0 : newIndex
-        let monthName = Calendar.current.monthSymbols[monthIndex]
-        model.month = .init(idx: monthIndex, title: monthName, value: monthIndex + 1)
-        if isNewYear {
-          let newYear = model.year.value + 1
-          model.year = .init(idx: newYear, title: newYear.description, value: newYear)
-        }
+        let updatedYear = isNewYear ? model.monthYear.year + 1 : model.monthYear.year
+        model.monthYear = .init(month: monthIndex, year: updatedYear)
         activeDatesPage = 2
       } label: {
         Image(systemName: "chevron.right")
@@ -131,11 +123,11 @@ struct CustomCalendar: View {
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 0) {
           let dates = [model.datesTempLeft, model.dates, model.datesTempRight]
-          //let colors = [Color.gray, Color.green, Color.blue] // color debugging
+          let colors = [Color.gray, Color.green, Color.blue] // color debugging
           ForEach(0...2, id: \.self) { idx in
             let dateCollection = dates[idx]
             drawDateCollectionViewStack(dateCollection: dateCollection, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
-              //.background(colors[idx])
+            .background(colors[idx])
           }
         }
         .background {
@@ -153,7 +145,6 @@ struct CustomCalendar: View {
       .onChange(of: activeDatesPage) { newValue in
         if newValue == 1 {
           proxy.scrollTo(newValue, anchor: .center)
-          model.updateActiveMonth(monthIndex: model.month.idx)
           model.generateTempCollectionPage()
         } else {
           withAnimation {
@@ -232,19 +223,12 @@ struct CustomCalendar: View {
 
   private func buildMonthPickerViewStack(geometry: GeometryProxy) -> some View {
     MonthYearPickerView(model: .init(),
-                        month: $model.month,
-                        year: $model.year,
+                        monthYear: $model.monthYear,
                         geometry: geometry)
     .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
     .background(.white)
-    .onChange(of: model.month) { newValue in
-      print("Month: ", newValue)
-      model.updateActiveMonth(monthIndex: newValue.idx)
-      model.generateTempCollectionPage()
-    }
-    .onChange(of: model.year) { newValue in
-      print("Year: ", newValue)
-      model.updateActiveYear(year: newValue.value)
+    .onChange(of: model.monthYear) { newValue in
+      print("MonthYear: ", newValue)
       model.generateTempCollectionPage()
     }
   }

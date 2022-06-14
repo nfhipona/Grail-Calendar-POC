@@ -9,23 +9,21 @@ import SwiftUI
 
 struct MonthYearPickerView: View {
   @StateObject private var model: MonthYearPickerViewModel
-  @Binding private var month: MonthYearPickerViewModel.PickerData<Int>
-  @Binding private var year: MonthYearPickerViewModel.PickerData<Int>
+  @Binding private var monthYear: MonthYearPickerViewModel.MonthYearData
   private let geometry: GeometryProxy
 
   @State private var monthSelection: Int
   @State private var yearSelection: Int
 
   init(model: MonthYearPickerViewModel,
-       month: Binding<MonthYearPickerViewModel.PickerData<Int>>,
-       year: Binding<MonthYearPickerViewModel.PickerData<Int>>,
+       monthYear: Binding<MonthYearPickerViewModel.MonthYearData>,
        geometry: GeometryProxy) {
 
     _model = .init(wrappedValue: model)
-    _month = month
-    _year = year
-    _monthSelection = .init(initialValue: month.wrappedValue.idx)
-    _yearSelection = .init(initialValue: year.wrappedValue.idx)
+    _monthYear = monthYear
+
+    _monthSelection = .init(initialValue: monthYear.wrappedValue.month)
+    _yearSelection = .init(initialValue: monthYear.wrappedValue.year)
 
     self.geometry = geometry
   }
@@ -55,13 +53,13 @@ struct MonthYearPickerView: View {
       .onChange(of: monthSelection) { newValue in
         let filteredData = model.monthsData.filter { $0.idx == newValue }
         if let selectedData = filteredData.first {
-          month = selectedData
+          monthYear = .init(month: selectedData.value, year: monthYear.year)
         }
       }
       .onChange(of: yearSelection) { newValue in
         let filteredData = model.yearsData.filter { $0.idx == newValue }
         if let selectedData = filteredData.first {
-          year = selectedData
+          monthYear = .init(month: monthYear.month, year: selectedData.value)
         }
       }
     }
@@ -70,18 +68,11 @@ struct MonthYearPickerView: View {
 }
 
 struct MonthYearPicker_Previews: PreviewProvider {
-  @State static var month: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
-                                                                               title: "",
-                                                                               value: 0)
-  @State static var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
-                                                                           title: "",
-                                                                           value: 0)
-
+  @State static var monthYear: MonthYearPickerViewModel.MonthYearData = .init(month: 04, year: 2022)
   static var previews: some View {
     GeometryReader { geometry in
       MonthYearPickerView(model: .init(),
-                          month: $month,
-                          year: $year,
+                          monthYear: $monthYear,
                           geometry: geometry)
     }
   }
