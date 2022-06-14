@@ -11,9 +11,9 @@ struct ContentView: View {
   @State private var date = Date()
   @State var location: CGPoint = .zero
 
-  @State var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0,
+  @State var month: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
                                                                         title: "",
-                                                                        value: "")
+                                                                        value: 0)
   @State var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
                                                                     title: "",
                                                                     value: 0)

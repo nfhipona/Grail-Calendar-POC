@@ -38,7 +38,7 @@ class MonthYearPickerViewModel: ObservableObject {
   private let minYear: Int // offset limit from the current year
   private let maxYear: Int // offset limit from the current year
 
-  let monthsData: [PickerData<String>]
+  let monthsData: [PickerData<Int>]
   let yearsData: [PickerData<Int>]
 
   init(minYear: Int = 5, maxYear: Int = 10) {
@@ -51,10 +51,10 @@ class MonthYearPickerViewModel: ObservableObject {
 }
 
 extension MonthYearPickerViewModel {
-  class  func generateMonths() -> [PickerData<String>] {
-    var data: [PickerData<String>] = []
+  class  func generateMonths() -> [PickerData<Int>] {
+    var data: [PickerData<Int>] = []
     for (idx, month) in Calendar.current.monthSymbols.enumerated() {
-      data.append(PickerData(idx: idx, title: month, value: month))
+      data.append(PickerData(idx: idx, title: month, value: idx + 1))
     }
     return data
   }

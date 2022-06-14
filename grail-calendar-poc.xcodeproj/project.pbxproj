@@ -19,6 +19,7 @@
 		8FB55610285183B2005040B1 /* CustomCalendarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */; };
 		8FB556162852DEDB005040B1 /* MonthYearPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB556152852DEDB005040B1 /* MonthYearPickerView.swift */; };
 		8FB556182852E14D005040B1 /* MonthYearPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB556172852E14D005040B1 /* MonthYearPickerViewModel.swift */; };
+		8FB5561A28582E78005040B1 /* ScrollView+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5561928582E78005040B1 /* ScrollView+Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendarModel.swift; sourceTree = "<group>"; };
 		8FB556152852DEDB005040B1 /* MonthYearPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthYearPickerView.swift; sourceTree = "<group>"; };
 		8FB556172852E14D005040B1 /* MonthYearPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthYearPickerViewModel.swift; sourceTree = "<group>"; };
+		8FB5561928582E78005040B1 /* ScrollView+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScrollView+Helper.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				8FB5560F285183B2005040B1 /* CustomCalendarModel.swift */,
 				8FB556152852DEDB005040B1 /* MonthYearPickerView.swift */,
 				8FB556172852E14D005040B1 /* MonthYearPickerViewModel.swift */,
+				8FB5561928582E78005040B1 /* ScrollView+Helper.swift */,
 				8FB5560928517520005040B1 /* DP1.swift */,
 				8FB5560B28517537005040B1 /* DP2.swift */,
 				8FB5560728509B96005040B1 /* Modifier.swift */,
@@ -162,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FB5560C28517537005040B1 /* DP2.swift in Sources */,
+				8FB5561A28582E78005040B1 /* ScrollView+Helper.swift in Sources */,
 				8FB5560828509B96005040B1 /* Modifier.swift in Sources */,
 				8FB55610285183B2005040B1 /* CustomCalendarModel.swift in Sources */,
 				8FB556162852DEDB005040B1 /* MonthYearPickerView.swift in Sources */,

@@ -12,7 +12,7 @@ struct CustomCalendar: View {
   private var geometry: GeometryProxy
   private let padding: CGFloat
 
-  @State private var showMonthYearPicker: Bool = false
+  @State private var isMonthYearPickerActive: Bool = false
   @State private var activeDatesPage: Int = 1
 
   init(model: CustomCalendarModel, geometry: GeometryProxy, padding: CGFloat = 14) {
@@ -36,7 +36,7 @@ struct CustomCalendar: View {
         drawDaysOfTheMonthViewStack(contentWidth: contentWidth)
       }
       .overlay {
-        if showMonthYearPicker {
+        if isMonthYearPickerActive {
           GeometryReader { geometry in
             buildMonthPickerViewStack(geometry: geometry)
               .transition(.move(edge: .top))
@@ -51,7 +51,7 @@ struct CustomCalendar: View {
   private func monthButton() -> some View {
     Button {
       withAnimation {
-        showMonthYearPicker = !showMonthYearPicker
+        isMonthYearPickerActive = !isMonthYearPickerActive
       }
     } label: {
       HStack {
@@ -63,6 +63,7 @@ struct CustomCalendar: View {
         Image(systemName: "chevron.right")
           .font(font)
           .foregroundColor(.blue)
+          .rotationEffect(isMonthYearPickerActive ? .degrees(90) : .degrees(0))
       }
       .frame(height: 40, alignment: .leading)
     }
@@ -74,11 +75,15 @@ struct CustomCalendar: View {
       let font = Font.system(size: 18, weight: .bold, design: .rounded)
       Button {
         let newIndex = model.month.idx - 1
-        let monthIndex = newIndex < 0 ? 11 : newIndex
+        let isPreviousYear = newIndex < 0
+        let monthIndex = isPreviousYear ? 11 : newIndex
         let monthName = Calendar.current.monthSymbols[monthIndex]
-        model.month = .init(idx: monthIndex, title: monthName, value: monthName)
-        model.updateActiveMonth(monthIndex: monthIndex)
-        //activeDatesPage = 0
+        model.month = .init(idx: monthIndex, title: monthName, value: monthIndex + 1)
+        if isPreviousYear {
+          let previousYear = model.year.value - 1
+          model.year = .init(idx: previousYear, title: previousYear.description, value: previousYear)
+        }
+        activeDatesPage = 0
       } label: {
         Image(systemName: "chevron.left")
           .font(font)
@@ -87,11 +92,15 @@ struct CustomCalendar: View {
 
       Button {
         let newIndex = model.month.idx + 1
-        let monthIndex = newIndex > 11 ? 0 : newIndex
+        let isNewYear = newIndex > 11
+        let monthIndex = isNewYear ? 0 : newIndex
         let monthName = Calendar.current.monthSymbols[monthIndex]
-        model.month = .init(idx: monthIndex, title: monthName, value: monthName)
-        model.updateActiveMonth(monthIndex: monthIndex)
-        //        activeDatesPage = 2
+        model.month = .init(idx: monthIndex, title: monthName, value: monthIndex + 1)
+        if isNewYear {
+          let newYear = model.year.value + 1
+          model.year = .init(idx: newYear, title: newYear.description, value: newYear)
+        }
+        activeDatesPage = 2
       } label: {
         Image(systemName: "chevron.right")
           .font(font)
@@ -118,30 +127,48 @@ struct CustomCalendar: View {
   private func drawDaysOfTheMonthViewStack(contentWidth: CGFloat) -> some View {
     let dayWidth = contentWidth / CGFloat(Calendar.current.shortWeekdaySymbols.count)
     let daysContainerHeight = dayWidth * 6
-
-    drawDateCollectionViewStack(dateCollection: model.dates, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
-
-    /*ScrollViewReader { proxy in
+    ScrollViewReader { proxy in
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 0) {
           let dates = [model.datesTempLeft, model.dates, model.datesTempRight]
-          let colors = [Color.gray, Color.green, Color.blue] // color debugging
+          //let colors = [Color.gray, Color.green, Color.blue] // color debugging
           ForEach(0...2, id: \.self) { idx in
             let dateCollection = dates[idx]
             drawDateCollectionViewStack(dateCollection: dateCollection, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
-              .tag(idx)
-              .background(colors[idx])
+              //.background(colors[idx])
+          }
+        }
+        .background {
+          GeometryReader { geometry in
+            Color.clear
+              .preference(key: ScrollViewOffsetKey.self,
+                          value: abs(geometry.frame(in: .named("contentOffset")).origin.x))
           }
         }
       }
       .frame(width: geometry.size.width, height: daysContainerHeight, alignment: .center)
+      .onAppear {
+        proxy.scrollTo(activeDatesPage, anchor: .center)
+      }
       .onChange(of: activeDatesPage) { newValue in
-        withAnimation {
+        if newValue == 1 {
           proxy.scrollTo(newValue, anchor: .center)
+          model.updateActiveMonth(monthIndex: model.month.idx)
+          model.generateTempCollectionPage()
+        } else {
+          withAnimation {
+            proxy.scrollTo(newValue, anchor: .center)
+          }
         }
       }
     }
-     */
+    .coordinateSpace(name: "contentOffset")
+    .onPreferenceChange(ScrollViewOffsetKey.self) { value in
+      let contentOffsetIndex = value / geometry.size.width
+      if contentOffsetIndex == 0 || contentOffsetIndex == 2 {
+        activeDatesPage = 1
+      }
+    }
   }
 
   private func drawDateCollectionViewStack(dateCollection: [CustomCalendarModel.DayRowModel], contentWidth: CGFloat, daysContainerHeight: CGFloat) -> some View {
@@ -213,10 +240,12 @@ struct CustomCalendar: View {
     .onChange(of: model.month) { newValue in
       print("Month: ", newValue)
       model.updateActiveMonth(monthIndex: newValue.idx)
+      model.generateTempCollectionPage()
     }
     .onChange(of: model.year) { newValue in
       print("Year: ", newValue)
       model.updateActiveYear(year: newValue.value)
+      model.generateTempCollectionPage()
     }
   }
 }

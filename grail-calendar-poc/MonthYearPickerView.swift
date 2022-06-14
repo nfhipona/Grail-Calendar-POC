@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MonthYearPickerView: View {
   @StateObject private var model: MonthYearPickerViewModel
-  @Binding private var month: MonthYearPickerViewModel.PickerData<String>
+  @Binding private var month: MonthYearPickerViewModel.PickerData<Int>
   @Binding private var year: MonthYearPickerViewModel.PickerData<Int>
   private let geometry: GeometryProxy
 
@@ -17,7 +17,7 @@ struct MonthYearPickerView: View {
   @State private var yearSelection: Int
 
   init(model: MonthYearPickerViewModel,
-       month: Binding<MonthYearPickerViewModel.PickerData<String>>,
+       month: Binding<MonthYearPickerViewModel.PickerData<Int>>,
        year: Binding<MonthYearPickerViewModel.PickerData<Int>>,
        geometry: GeometryProxy) {
 
@@ -70,9 +70,9 @@ struct MonthYearPickerView: View {
 }
 
 struct MonthYearPicker_Previews: PreviewProvider {
-  @State static var month: MonthYearPickerViewModel.PickerData<String> = .init(idx: 0,
+  @State static var month: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
                                                                                title: "",
-                                                                               value: "")
+                                                                               value: 0)
   @State static var year: MonthYearPickerViewModel.PickerData<Int> = .init(idx: 0,
                                                                            title: "",
                                                                            value: 0)
