@@ -123,11 +123,11 @@ struct CustomCalendar: View {
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 0) {
           let dates = [model.datesTempLeft, model.dates, model.datesTempRight]
-          let colors = [Color.gray, Color.green, Color.blue] // color debugging
+          //let colors = [Color.gray, Color.green, Color.blue] // TODO: color debugger
           ForEach(0...2, id: \.self) { idx in
             let dateCollection = dates[idx]
             drawDateCollectionViewStack(dateCollection: dateCollection, contentWidth: contentWidth, daysContainerHeight: daysContainerHeight)
-            .background(colors[idx])
+            //.background(colors[idx])
           }
         }
         .background {
@@ -185,7 +185,7 @@ struct CustomCalendar: View {
           } label: {
             Text(day.number.description)
               .font(font)
-              .foregroundColor(.black)
+              .foregroundColor(day.isSelected ? .white : day.isCurrentDate ? .blue : .black)
               .frame(width: dayWidth, height: dayWidth, alignment: .center)
           }
           .background(day.isSelected ? .blue : .clear)

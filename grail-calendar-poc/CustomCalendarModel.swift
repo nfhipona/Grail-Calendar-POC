@@ -151,7 +151,10 @@ extension CustomCalendarModel {
 
 extension CustomCalendarModel {
   func selectDate(with sd: DayModel) {
-    print("selectDated: ", sd.number)
+    if let d = sd.date {
+      print("selectDated: ", sd.number)
+      date = d
+    }
 
     var datesTmp: [DayRowModel] = []
     for d in dates {
@@ -172,17 +175,17 @@ extension CustomCalendarModel {
     let isPreviousYear = newIndexLeft < 0
     let monthIndexLeft = isPreviousYear ? 11 : newIndexLeft
     let yearTemplateLeft = isPreviousYear ? monthYear.year - 1 : monthYear.year
-    datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexLeft, inYear: yearTemplateLeft)
+    datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthIndexLeft, inYear: yearTemplateLeft)
 
     // current timeline
-    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthNumberConstant, inYear: monthYear.year)
+    dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthNumberConstant, inYear: monthYear.year)
 
     // future timeline
     let newIndexRight = monthNumberConstant + 1
     let isNewYear = newIndexRight > 11
     let monthIndexRight = isNewYear ? 0 : newIndexRight
     let yearTemplateRight = isNewYear ? monthYear.year + 1 : monthYear.year
-    datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, forMonth: monthIndexRight, inYear: yearTemplateRight)
+    datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthIndexRight, inYear: yearTemplateRight)
   }
 }
 
@@ -201,7 +204,7 @@ extension CustomCalendarModel {
     return 1...calendar.dateComponents([.day], from: start, to: end).day!
   }
 
-  class func generateDays(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayModel] {
+  class func generateDays(_ calendar: Calendar = .current, selectedDate: Date? = .now, forMonth month: Int, inYear: Int) -> [DayModel] {
     var dComponents = DateComponents(calendar: calendar, timeZone: .current)
     dComponents.day = 1
     dComponents.month = month
@@ -226,7 +229,10 @@ extension CustomCalendarModel {
       dayComponents.day = i
 
       if let date = calendar.date(from: dayComponents) {
-        let isSelected = calendar.isDateInToday(date)
+        var isSelected = false
+        if let selectedDate = selectedDate {
+          isSelected = calendar.isDate(date, inSameDayAs: selectedDate)
+        }
         let model = DayModel(date: date, number: i, isSelected: isSelected)
         days.append(model)
       }
@@ -235,8 +241,8 @@ extension CustomCalendarModel {
     return days
   }
 
-  class func collectDaysPerRow(_ calendar: Calendar = .current, forMonth month: Int, inYear: Int) -> [DayRowModel] {
-    let days = generateDays(calendar, forMonth: month, inYear: inYear)
+  class func collectDaysPerRow(_ calendar: Calendar = .current, selectedDate: Date? = nil, forMonth month: Int, inYear: Int) -> [DayRowModel] {
+    let days = generateDays(calendar, selectedDate: selectedDate, forMonth: month, inYear: inYear)
 
     var daysCollection: [DayRowModel] = []
     var collectionIndex: Int = 0
