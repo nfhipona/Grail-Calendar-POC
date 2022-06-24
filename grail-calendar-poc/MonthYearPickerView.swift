@@ -29,8 +29,8 @@ struct MonthYearPickerView: View {
   }
 
   var body: some View {
-    HStack(spacing: 0) {
-      let contentWidth = geometry.size.width / 2
+    HStack(spacing: 8) {
+      let contentWidth = abs(geometry.size.width - 56) / 2
 
       Picker("Month", selection: $monthSelection) {
         ForEach(model.monthsData, id: \.idx) { data in
@@ -40,22 +40,26 @@ struct MonthYearPickerView: View {
       }
       .frame(width: contentWidth, alignment: .center)
       .pickerStyle(.wheel)
-
-      Spacer(minLength: 0)
-      Picker("Year", selection: $yearSelection) {
-        ForEach(model.yearsData, id: \.idx) { data in
-          Text(data.title)
-            .accessibilityLabel(data.title)
-        }
-      }
-      .frame(width: contentWidth, alignment: .center)
-      .pickerStyle(.wheel)
+      .clipped()
       .onChange(of: monthSelection) { newValue in
         let filteredData = model.monthsData.filter { $0.idx == newValue }
         if let selectedData = filteredData.first {
           monthYear = .init(month: selectedData.value, year: monthYear.year)
         }
       }
+
+      Spacer(minLength: 0)
+
+      Picker("Year", selection: $yearSelection) {
+        ForEach(model.yearsData, id: \.idx) { data in
+          Text(data.title)
+            .accessibilityLabel(data.title)
+            .frame(width: contentWidth, alignment: .center)
+        }
+      }
+      .frame(width: contentWidth, alignment: .center)
+      .pickerStyle(.wheel)
+      .clipped()
       .onChange(of: yearSelection) { newValue in
         let filteredData = model.yearsData.filter { $0.idx == newValue }
         if let selectedData = filteredData.first {
@@ -63,6 +67,7 @@ struct MonthYearPickerView: View {
         }
       }
     }
+    .padding(.horizontal, 24)
     .frame(width: geometry.size.width, alignment: .center)
   }
 }
