@@ -173,19 +173,19 @@ extension CustomCalendarModel {
 
     let newIndexLeft = monthNumberConstant - 1
     let isPreviousYear = newIndexLeft < 0
-    let monthIndexLeft = isPreviousYear ? 11 : newIndexLeft
+    let previousMonth = isPreviousYear ? 11 : newIndexLeft
     let yearTemplateLeft = isPreviousYear ? monthYear.year - 1 : monthYear.year
-    datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthIndexLeft, inYear: yearTemplateLeft)
+    datesTempLeft = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: previousMonth, inYear: yearTemplateLeft)
 
     // current timeline
     dates = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthNumberConstant, inYear: monthYear.year)
 
     // future timeline
     let newIndexRight = monthNumberConstant + 1
-    let isNewYear = newIndexRight > 11
-    let monthIndexRight = isNewYear ? 0 : newIndexRight
+    let isNewYear = newIndexRight > 12
+    let nextMonth = isNewYear ? 1 : newIndexRight
     let yearTemplateRight = isNewYear ? monthYear.year + 1 : monthYear.year
-    datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: monthIndexRight, inYear: yearTemplateRight)
+    datesTempRight = CustomCalendarModel.collectDaysPerRow(CustomCalendarModel.calendar, selectedDate: date, forMonth: nextMonth, inYear: yearTemplateRight)
   }
 }
 
